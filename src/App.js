@@ -96,9 +96,12 @@ class App extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                  
                   {
+                    
                     //MAP = Mapeamento listar de autores para uma lista de HTML
                     this.state.lista.map(function(autor){
+                      
                       return (
                         <tr key={autor.id}>
                           <td>{autor.nome}</td>
