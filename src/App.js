@@ -1,9 +1,39 @@
 import React, { Component } from 'react';
 import './css/pure-min.css';
 import './css/side-menu.css';
+//IMportando o Jquery instalando via npm e assiociando $ como apelido
+import $ from'jquery';
 
 class App extends Component {
+
+  constructor () {
+    //Chamando o super do meu construtor
+    super();
+
+    //Estado que vou guardar meu JSON
+    this.state = {lista : []};
+  }
+    
+    //Define que será carregado antes do meu render
+    componentWillMount(){
+    console.log("willMount");
+      $.ajax({
+        //URL do meu arquivo - CDC.jar ou http://cdc-react.herokuapp.com/api/autores (Mais demorado)
+        url:"http://cdc-react.herokuapp.com/api/autores",
+        //Tipo dos dados
+        dataType: 'json',
+        //Função que retorna se tiver sucesso
+        success:function(resposta){
+        console.log("chegou a resposta");
+          //Atualizando o estado do JSON automaticamente
+          this.setState({lista:resposta});
+        }.bind(this) //Indicando para a aplicação que o this que eu quero é do React e não do Jquery
+      });
+    }
+
+  //Função responsável por executar meu HTML
   render() {
+    console.log("render");
     return (
       <div id="layout">
         <a href="#menu" id="menuLink" className="menu-link">
@@ -61,14 +91,22 @@ class App extends Component {
                 <thead>
                   <tr>
                     <th>Nome</th>
-                    <th>email</th>
+                    <th>Email</th>
+                    <th>Senha</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Alberto</td>
-                    <td>alberto.souza@caelum.com.br</td>
-                  </tr>
+                  {
+                    //MAP = Mapeamento listar de autores para uma lista de HTML
+                    this.state.lista.map(function(autor){
+                      return (
+                        <tr key={autor.id}>
+                          <td>{autor.nome}</td>
+                          <td>{autor.email}</td>
+                        </tr>
+                      );
+                    })
+                  }
                 </tbody>
               </table>
             </div>
