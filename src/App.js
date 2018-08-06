@@ -4,19 +4,26 @@ import './css/side-menu.css';
 //IMportando o Jquery instalando via npm e assiociando $ como apelido
 import $ from'jquery';
 
+//Subir no git como OROGIN
+
 class App extends Component {
 
   constructor () {
     //Chamando o super do meu construtor
     super();
 
-    //Estado que vou guardar meu JSON
-    this.state = {lista : []};
+    //Estado que vou guardar meu JSON + Dados do meu form
+    this.state = {lista : [], nome:'',email:'',senha:''};
+    //Meu form usa o meu this do meu React
+    this.enviaForm = this.enviaForm.bind(this);
+    //Meus inputs set's usam o meu this do meu React
+    this.setNome = this.setNome.bind(this);
+    this.setEmail = this.setEmail.bind(this);
+    this.setSenha = this.setSenha.bind(this);
   }
     
     //Define que será carregado antes do meu render
     componentWillMount(){
-    console.log("willMount");
       $.ajax({
         //URL do meu arquivo - CDC.jar ou http://cdc-react.herokuapp.com/api/autores (Mais demorado)
         url:"http://cdc-react.herokuapp.com/api/autores",
@@ -24,16 +31,54 @@ class App extends Component {
         dataType: 'json',
         //Função que retorna se tiver sucesso
         success:function(resposta){
-        console.log("chegou a resposta");
           //Atualizando o estado do JSON automaticamente
           this.setState({lista:resposta});
         }.bind(this) //Indicando para a aplicação que o this que eu quero é do React e não do Jquery
       });
     }
 
+    //Função de envio dos dados + (Evento do React)
+    enviaForm(evento){
+      //Define que esse evendo não seja mais propagado (Não atualiza a página)
+      evento.preventDefault();
+      
+      $.ajax({
+        url:'http://cdc-react.herokuapp.com/api/autores',
+        contentType:'application/json',
+        dataType: 'json',
+        type:'post',
+        //Dados que eu vou enviar / Stringify = transforma json em texto
+        data: JSON.stringify({nome:this.state.nome,email:this.state.email,senha:this.state.senha}),
+        //Enviou com sucesso
+        success: function(resposta){
+          console.log("sucesso");
+          //Alterando o estado para recarregar minha lista sem recarrega a página
+          this.setState({lista:resposta});
+        }.bind(this),
+        //Caso de erro
+        error: function(resposta){
+          console.log("erro");
+        }
+      });
+    }
+
+    //Pega o valor do meu input nome
+    setNome(evento){
+      this.setState({nome:evento.target.value});
+    }
+
+    //Pega o valor do meu input email
+    setEmail(evento){
+      this.setState({email:evento.target.value});
+    }
+
+    //Pega o valor do meu input senha
+    setSenha(evento){
+      this.setState({senha:evento.target.value});
+    }
+
   //Função responsável por executar meu HTML
   render() {
-    console.log("render");
     return (
       <div id="layout">
         <a href="#menu" id="menuLink" className="menu-link">
@@ -66,18 +111,19 @@ class App extends Component {
           </div>
           <div className="content" id="content">
             <div className="pure-form pure-form-aligned">
-              <form className="pure-form pure-form-aligned">
+
+              <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
                 <div className="pure-control-group">
                   <label htmlFor="nome">Nome</label>
-                  <input id="nome" type="text" name="nome" value="" />
+                  <input id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} />
                 </div>
                 <div className="pure-control-group">
                   <label htmlFor="email">Email</label>
-                  <input id="email" type="email" name="email" value="" />
+                  <input id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} />
                 </div>
                 <div className="pure-control-group">
                   <label htmlFor="senha">Senha</label>
-                  <input id="senha" type="password" name="senha" />
+                  <input id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} />
                 </div>
                 <div className="pure-control-group">
                   <label></label>
@@ -92,7 +138,6 @@ class App extends Component {
                   <tr>
                     <th>Nome</th>
                     <th>Email</th>
-                    <th>Senha</th>
                   </tr>
                 </thead>
                 <tbody>
