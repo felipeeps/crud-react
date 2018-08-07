@@ -3,6 +3,8 @@ import './css/pure-min.css';
 import './css/side-menu.css';
 //IMportando o Jquery instalando via npm e assiociando $ como apelido
 import $ from'jquery';
+//Importando a minha classe InputCustomizado
+import InputCustomizado from './componentes/inputCustomizado';
 
 //Subir no git como OROGIN
 
@@ -113,18 +115,13 @@ class App extends Component {
             <div className="pure-form pure-form-aligned">
 
               <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
-                <div className="pure-control-group">
-                  <label htmlFor="nome">Nome</label>
-                  <input id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} />
-                </div>
-                <div className="pure-control-group">
-                  <label htmlFor="email">Email</label>
-                  <input id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} />
-                </div>
-                <div className="pure-control-group">
-                  <label htmlFor="senha">Senha</label>
-                  <input id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} />
-                </div>
+                
+                <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
+
+                <InputCustomizado id="email" type="text" name="email" value={this.state.email} onChange={this.setEmail} label="Email"/>
+                
+                <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha"/>
+
                 <div className="pure-control-group">
                   <label></label>
                   <button type="submit" className="pure-button pure-button-primary">Gravar</button>
